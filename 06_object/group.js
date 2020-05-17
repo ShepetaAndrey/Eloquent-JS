@@ -1,6 +1,9 @@
 class Group {
 	constructor() {
 		this.group = [];
+		this[Symbol.iterator] = function() {
+			return new GroupIterator(this);
+		}
 	}
 
 	add(item) {
@@ -28,19 +31,21 @@ class Group {
 	}
 }
 
-const g = new Group();
+class GroupIterator {
+	constructor(group) {
+		this.index = 0;
+		this.group = group.group;
+	}
 
-g.add(1);
-g.add(2);
-g.add(1);
-console.log(g);
-console.log(g.has(1));
-console.log(g.has(5));
-g.delete(5);
-console.log(g);
-g.delete(2);
-console.log(g);
+	next() {
+		if(this.index < this.group.length) {
+			return { value: this.group[this.index++], done: false };
+		} else {
+			return { done: true };
+		}
+	}
+}
 
-let g2 = Group.from([1,2,4,5,6,4,5,7,6,3,3,3,3,3,3,3,3,3])
-console.log(g2)
-console.log(g2.has(9))
+let g = Group.from([1,2,4,5,6,4,5,7,6,3,3,3,3,3,3,3,3,3])
+
+for(let a of g) console.log(a)
